@@ -17,7 +17,6 @@ public:
 	SidPlayer(SID *sid) { this->sid = sid;}
 	void setDefaultConfig(SidPlayerConfig *cfg);
 	void begin(SidPlayerConfig *cfg);
-  // void clock();
 
 	inline void setreg(int ofs, int val) { sid->write(ofs, val); }
 	inline uint8_t getreg(int ofs) { return sid->read(ofs); }
@@ -45,7 +44,4 @@ private:
 
 	volatile bool playing;
 	SID *sid;
-
-	// char regbuffer[25];				// current frame sid registers content
-	// char prev_regbuffer[25]; 	// previous frame sid registers content
 };

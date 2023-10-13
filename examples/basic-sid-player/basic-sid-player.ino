@@ -1,3 +1,18 @@
+/*
+Basic example using the ReSID library with ESP32
+A single in-memory array with sid register dumps for a tune is applied every 20ms to the sid emulator.
+In between these updates, the number of samples needed in between updates given a sample rate is computed.
+6502 emulation is not needed for this scheme to work, however this probably limits the number of tunes that 
+can be usd with this type of player.
+
+This example also relies on the following libraries to work properly:
+  - https://github.com/pschatzmann/arduino-audio-tools
+  - https://github.com/pschatzmann/arduino-audiokit
+As hardware, an AI ESP32 Audio Kit V2.2 from AliExpress was used.
+
+10/13/2023 beachviking
+*/
+
 #include "AudioKitHAL.h"
 #include "AudioTools.h"
 #include "SidPlayer.h"
@@ -22,49 +37,6 @@ char oldbuffer[25];
 const int BUFFER_SIZE = 4 * 882;  // needs to be at least (2 CH * 2 BYTES * SAMPLERATE/PAL_CLOCK). Ex. 4 * (44100/50)
 uint8_t audiobuffer[BUFFER_SIZE];
 
-// void debugRun(int numframes) {
-//   int song_idx = 0;
-//   char output[128];
-//   printf("| Frame | 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F 10 11 12 13 14 15 16 17 18 |");
-//   printf("\n");
-//   printf("+-------+---------------------+--------------------+--------------------+------------+");
-//   printf("\n");
-//   for(int frame=0; frame < numframes; frame++)
-//   {
-//     output[0] = 0;
-//     sprintf(&output[strlen(output)], "| %5d | ", frame);
-//     for(int i=0;i<25;i++) {
-//       buffer[i] = Comic_Bakery[song_idx];
-//       if(buffer[i] != oldbuffer[i]) {
-//         player.setreg(i, buffer[i]);
-//         sprintf(&output[strlen(output)], "%02X ", buffer[i]);
-//         oldbuffer[i] = buffer[i];                  
-//       }
-//       else
-//       {
-//         sprintf(&output[strlen(output)], ".. ");
-//       }
-//       ++song_idx;
-//     }
-//     printf("%s|\n", output);
-//     printf("+-------+---------------------+--------------------+--------------------+------------+");
-//     printf("\n");
-//     // print samples
-//     size_t l = player.read(audiobuffer, BUFFER_SIZE);
-//     for(int k = 0; k < BUFFER_SIZE/4; k+=4 ) {
-//       output[0] = 0;
-//       sprintf(&output[strlen(output)], "| %5d | ", k);
-//       sprintf(&output[strlen(output)], "%02X %02X %02X %02X ", audiobuffer[k], audiobuffer[k+1], audiobuffer[k+2], audiobuffer[k+3]);
-//       printf("%s|\n", output);
-//     }
-//     printf("+-------+---------------------+--------------------+--------------------+------------+");
-//     printf("\n");
-//   }
-
-//   printf("Simulation done.\n");
-//   while(1==1);
-// }
-
 void setup() {
   LOGLEVEL_AUDIOKIT = AudioKitInfo; 
   Serial.begin(115200);
@@ -75,8 +47,6 @@ void setup() {
 
   player.setDefaultConfig(&sid_cfg);
   sid_cfg.samplerate = cfg.sampleRate();
-  // sid_cfg.song_data = (unsigned char*)Comic_Bakery;
-  // sid_cfg.song_length = Comic_Bakery_len;
   player.begin(&sid_cfg);
   memset(buffer,0,sizeof(buffer));
   memset(oldbuffer,0,sizeof(oldbuffer));  
@@ -88,9 +58,6 @@ void loop() {
 
   if (millis()-m < player.framePeriod()) return;
   m = millis();
-
-  // update sid registers, raster line time (50Hz)
-  // player.clock();
 
   // update sid registers, raster line time (50Hz)
   for(int i=0;i<25;i++) {

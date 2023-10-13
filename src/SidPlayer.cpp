@@ -7,24 +7,6 @@ void SidPlayer::setDefaultConfig(SidPlayerConfig *cfg) {
 	cfg->framerate = PAL_FRAMERATE;
 }
 
-// void SidPlayer::clock()
-// {
-// 	static long song_idx = 0;
-
-//   // update sid registers
-//   for(int i=0;i<25;i++) {
-//     regbuffer[i] = config->song_data[song_idx];
-//     if(regbuffer[i] != prev_regbuffer[i]) {
-//       setreg(i, regbuffer[i]);
-//       prev_regbuffer[i] = regbuffer[i];                  
-//     }
-//     ++song_idx;
-//   }
-
-//   if (song_idx >= config->song_length)
-//     song_idx = 0;
-// }
-
 void SidPlayer::begin(SidPlayerConfig *cfg)
 {
 	config = cfg;
@@ -34,9 +16,6 @@ void SidPlayer::begin(SidPlayerConfig *cfg)
 
 	samples_per_frame = round((float)config->samplerate / ((float)cfg->framerate));
 	frame_period_ms = 1000 / cfg->framerate;
-
-  // memset(regbuffer,0,sizeof(regbuffer));
-  // memset(prev_regbuffer,0,sizeof(prev_regbuffer));
 
 	printf("clockfreq: %d\n", this->config->clockfreq);
 	printf("samplerate: %d\n", this->config->samplerate);
