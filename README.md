@@ -10,3 +10,10 @@ git clone https://github.com/beachviking/arduino-esp32-resid.git
 ```
 
 I recommend to use git because you can easily update to the latest version just by executing the ```git pull``` command in the project folder.
+
+## Dependencies
+The library and the examples also rely on the following libraries to work properly:
+  - https://github.com/pschatzmann/arduino-audio-tools
+  - https://github.com/pschatzmann/arduino-audiokit
+
+As hardware, an AI ESP32 Audio Kit V2.2 from AliExpress was used.

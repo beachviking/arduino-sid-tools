@@ -3,11 +3,12 @@ Basic example using the ReSID library with ESP32
 A single in-memory array with sid register dumps for a tune is applied every 20ms to the sid emulator.
 In between these updates, the number of samples needed in between updates given a sample rate is computed.
 6502 emulation is not needed for this scheme to work, however this probably limits the number of tunes that 
-can be usd with this type of player.
+can be used with this type of player.
 
 This example also relies on the following libraries to work properly:
   - https://github.com/pschatzmann/arduino-audio-tools
   - https://github.com/pschatzmann/arduino-audiokit
+
 As hardware, an AI ESP32 Audio Kit V2.2 from AliExpress was used.
 
 10/13/2023 beachviking
@@ -18,11 +19,6 @@ As hardware, an AI ESP32 Audio Kit V2.2 from AliExpress was used.
 #include "SidPlayer.h"
 
 #include "comic.h"
-
-#define NEXT_TUNE_BUTTON_PIN  5
-#define NEXT_SONG_BUTTON_PIN  18
-
-// #define DEBUGMODE
 
 AudioKit kit;
 AudioActions actions;
@@ -40,6 +36,7 @@ uint8_t audiobuffer[BUFFER_SIZE];
 void setup() {
   LOGLEVEL_AUDIOKIT = AudioKitInfo; 
   Serial.begin(115200);
+
   // open in write mode
   auto cfg = kit.defaultConfig(audiokit::AudioOutput);
   //cfg.sample_rate = audio_hal_iface_samples_t::AUDIO_HAL_22K_SAMPLES;
@@ -59,7 +56,7 @@ void loop() {
   if (millis()-m < player.framePeriod()) return;
   m = millis();
 
-  // update sid registers, raster line time (50Hz)
+  // update the total of 25 sid registers, every raster line time (50Hz for PAL)
   for(int i=0;i<25;i++) {
     buffer[i] = Comic_Bakery[song_idx];
     if(buffer[i] != oldbuffer[i]) {
@@ -75,5 +72,4 @@ void loop() {
   // read samples for this frame
   size_t l = player.read(audiobuffer, BUFFER_SIZE);
   kit.write(audiobuffer, l);
-  // actions.processActions();
 }
