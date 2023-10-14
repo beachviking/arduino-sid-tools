@@ -23,6 +23,10 @@
 #pragma once
 
 #include "siddefs.h"
+#include "wave6581__ST.h"
+#include "wave6581_P_T.h"
+#include "wave6581_PST.h"
+#include "wave6581_PS_.h"
 
 RESID_NAMESPACE_START
 

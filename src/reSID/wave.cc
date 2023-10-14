@@ -20,13 +20,6 @@
 #define __WAVE_CC__
 #include "wave.h"
 
-#ifdef PLATFORMIO
-#include "wave6581__ST.cc"
-#include "wave6581_P_T.cc"
-#include "wave6581_PST.cc"
-#include "wave6581_PS_.cc"
-#endif
-
 RESID_NAMESPACE_START
 
 // ----------------------------------------------------------------------------

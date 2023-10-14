@@ -13,10 +13,10 @@
 #include "reSID/wave8580_PST.cc"
 */
 
-#include "reSID/wave6581__ST.cc" 
-#include "reSID/wave6581_P_T.cc"
-#include "reSID/wave6581_PS_.cc"
-#include "reSID/wave6581_PST.cc"
+// #include "reSID/wave6581__ST.cc" 
+// #include "reSID/wave6581_P_T.cc"
+// #include "reSID/wave6581_PS_.cc"
+// #include "reSID/wave6581_PST.cc"
 
 #include "reSID/wave.cc"
 #include "reSID/sid.cc"
