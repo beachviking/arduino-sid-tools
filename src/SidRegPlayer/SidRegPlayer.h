@@ -1,0 +1,104 @@
+#pragma once
+
+#include "SidPlayer.h"
+
+typedef struct{
+    uint16_t samplerate;
+    int sid_model;
+    int clockfreq;
+		float framerate;
+    unsigned char *song_data;
+    int song_length;		
+} SidRegPlayerConfig;
+
+class SidRegPlayer
+{
+public:
+	SidRegPlayer(SID *sid) { this->sid = sid;}
+	void setDefaultConfig(SidRegPlayerConfig *cfg);
+	void begin(SidRegPlayerConfig *cfg);
+
+	inline void setreg(int ofs, int val) { sid->write(ofs, val); }
+	inline uint8_t getreg(int ofs) { return sid->read(ofs); }
+	void reset(void);
+	void stop(void);
+	inline bool isPlaying(void) { return playing; }	
+	size_t read(uint8_t *buffer, size_t bytes);
+
+	// Provides the frame period in ms
+	int framePeriod() { return(frame_period_ms); }
+	// Provides the number of samples per frame
+	int samplesPerFrame() { return(samples_per_frame); }
+
+private:
+	const int SAMPLERATE = 22050;
+	const int SID_MODEL = 6581;
+	const float PAL_FRAMERATE = 50.0;
+	const int CLOCKFREQ = 985248;
+
+	SidRegPlayerConfig *config;
+	
+	cycle_count delta_t;					// ratio between system clk and samplerate, ie CLOCKFREQ / SAMPLERATE
+	int frame_period_ms = 20;			// raster line time in ms(PAL = 1000/50Hz = 20 ms)
+	int samples_per_frame = 441; 	// samplerate / framerate
+
+	volatile bool playing;
+	SID *sid;
+};
+
+
+void SidRegPlayer::setDefaultConfig(SidRegPlayerConfig *cfg) {
+  cfg->samplerate = SAMPLERATE;
+  cfg->sid_model = SID_MODEL;
+  cfg->clockfreq = CLOCKFREQ;
+	cfg->framerate = PAL_FRAMERATE;
+}
+
+void SidRegPlayer::begin(SidRegPlayerConfig *cfg)
+{
+	config = cfg;
+	this->reset();
+	sid->set_sampling_parameters(config->clockfreq, SAMPLE_FAST, config->samplerate); 
+	delta_t = round((float)config->clockfreq / ((float)config->samplerate));
+
+	samples_per_frame = round((float)config->samplerate / ((float)cfg->framerate));
+	frame_period_ms = 1000 / cfg->framerate;
+
+	printf("clockfreq: %d\n", this->config->clockfreq);
+	printf("samplerate: %d\n", this->config->samplerate);
+	printf("samples per frame: %d\n", samplesPerFrame());
+	printf("frame period: %d ms\n", framePeriod());
+	printf("delta_t: %d\n", delta_t);
+
+	playing = true;
+}
+
+void SidRegPlayer::reset(void)
+{
+	sid->reset();
+}
+
+void SidRegPlayer::stop(void)
+{
+	playing = false;	
+}
+
+/// fill the data with 2 channels
+size_t SidRegPlayer::read(uint8_t *buffer, size_t bytes)
+{
+  size_t result = 0;
+
+  if (!playing)
+    return result;
+
+  int16_t *ptr = (int16_t *)buffer;
+  for (int j = 0; j < samples_per_frame; j++)	
+  {
+		sid->clock(delta_t);
+    int16_t sample = sid->output();
+    *ptr++ = sample;
+    *ptr++ = sample;
+    result += 4;
+  }
+  return result;
+}

@@ -24,8 +24,8 @@ AudioKit kit;
 AudioActions actions;
 
 SID sid;
-SidPlayer player(&sid);
-SidPlayerConfig sid_cfg;
+SidRegPlayer player(&sid);
+SidRegPlayerConfig sid_cfg;
 
 char buffer[25];
 char oldbuffer[25];
