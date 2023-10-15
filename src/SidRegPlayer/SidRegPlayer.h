@@ -25,10 +25,15 @@ public:
 	inline bool isPlaying(void) { return playing; }	
 	size_t read(uint8_t *buffer, size_t bytes);
 
-	// Provides the current frame period in us
-	long framePeriod() { return(frame_period_us); }
+	// Provides/sets the current frame period in us
+	long getFramePeriod() { return(frame_period_us); }
+	void setFramePeriod(long period_us) {
+		frame_period_us = period_us;
+		samples_per_frame = round((float)config->samplerate / ((float)1000000/frame_period_us));
+	}
+
 	// Provides the number of samples per frame
-	int samplesPerFrame() { return(samples_per_frame); }
+	long getSamplesPerFrame() { return(samples_per_frame); }
 
 private:
 	const int SAMPLERATE = 22050;
@@ -61,13 +66,15 @@ void SidRegPlayer::begin(SidRegPlayerConfig *cfg)
 	sid->set_sampling_parameters(config->clockfreq, SAMPLE_FAST, config->samplerate); 
 	delta_t = round((float)config->clockfreq / ((float)config->samplerate));
 
-	samples_per_frame = round((float)config->samplerate / ((float)cfg->framerate));
-	frame_period_us = 1000000 / cfg->framerate;
+	setFramePeriod(1000000 / cfg->framerate);
+	// frame_period_us = 1000000 / cfg->framerate;
+	// samples_per_frame = round((float)config->samplerate / ((float)cfg->framerate));
+	// samples_per_frame = round((float)config->samplerate / ((float)1000000/frame_period_us));
 
 	printf("clockfreq: %d\n", this->config->clockfreq);
 	printf("samplerate: %d\n", this->config->samplerate);
-	printf("samples per frame: %d\n", samplesPerFrame());
-	printf("frame period: %ld us\n", framePeriod());
+	printf("samples per frame: %d\n", getSamplesPerFrame());
+	printf("frame period: %ld us\n", getFramePeriod());
 	printf("delta_t: %d\n", delta_t);
 
 	playing = true;

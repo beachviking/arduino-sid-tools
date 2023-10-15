@@ -1,5 +1,5 @@
 /*
-Basic example using the ReSID library with ESP32
+Basic example using the ReSID library with ESP32, using sid register dump data
 A single in-memory array with sid register dumps for a tune is applied every 20ms to the sid emulator.
 In between these updates, the number of samples needed in between updates given a sample rate is computed.
 6502 emulation is not needed for this scheme to work, however this probably limits the number of tunes that 
@@ -54,7 +54,7 @@ void loop() {
   static long m = micros();
   static long song_idx = 0;
 
-  if (micros()-m < player.framePeriod()) return;
+  if (micros()-m < player.getFramePeriod()) return;
   m = micros();
 
   // update the total of 25 sid registers, every raster line time (50Hz for PAL)
@@ -71,6 +71,6 @@ void loop() {
     song_idx = 0;
 
   // read samples for this frame
-  size_t l = player.read(audiobuffer, BUFFER_SIZE);
+  size_t l = player.read(audiobuffer, player.getSamplesPerFrame());
   kit.write(audiobuffer, l);
 }
