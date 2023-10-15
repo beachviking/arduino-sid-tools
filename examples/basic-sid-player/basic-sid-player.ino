@@ -9,14 +9,15 @@ This example also relies on the following libraries to work properly:
   - https://github.com/pschatzmann/arduino-audio-tools
   - https://github.com/pschatzmann/arduino-audiokit
 
-As hardware, an AI ESP32 Audio Kit V2.2 from AliExpress was used.
+As hardware, an AI ESP32 Audio Kit V2.2 from AliExpress was used. Make sure you set up the arduino-audiokit lib 
+correctly by following the instructions for that library.
 
 10/13/2023 beachviking
 */
 
 #include "AudioKitHAL.h"
 #include "AudioTools.h"
-#include "SidPlayer.h"
+#include "SidTools.h"
 
 #include "comic.h"
 
@@ -50,11 +51,11 @@ void setup() {
 }
 
 void loop() {
-  static int m = millis();
+  static long m = micros();
   static long song_idx = 0;
 
-  if (millis()-m < player.framePeriod()) return;
-  m = millis();
+  if (micros()-m < player.framePeriod()) return;
+  m = micros();
 
   // update the total of 25 sid registers, every raster line time (50Hz for PAL)
   for(int i=0;i<25;i++) {

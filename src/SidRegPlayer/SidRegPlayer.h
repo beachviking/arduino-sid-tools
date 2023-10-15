@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SidPlayer.h"
+#include "SidTools.h"
 
 typedef struct{
     uint16_t samplerate;
@@ -25,8 +25,8 @@ public:
 	inline bool isPlaying(void) { return playing; }	
 	size_t read(uint8_t *buffer, size_t bytes);
 
-	// Provides the frame period in ms
-	int framePeriod() { return(frame_period_ms); }
+	// Provides the current frame period in us
+	long framePeriod() { return(frame_period_us); }
 	// Provides the number of samples per frame
 	int samplesPerFrame() { return(samples_per_frame); }
 
@@ -39,7 +39,7 @@ private:
 	SidRegPlayerConfig *config;
 	
 	cycle_count delta_t;					// ratio between system clk and samplerate, ie CLOCKFREQ / SAMPLERATE
-	int frame_period_ms = 20;			// raster line time in ms(PAL = 1000/50Hz = 20 ms)
+	long frame_period_us = 20000;	// raster line time in ms(PAL = 1000/50Hz = 20000 us)
 	int samples_per_frame = 441; 	// samplerate / framerate
 
 	volatile bool playing;
@@ -62,12 +62,12 @@ void SidRegPlayer::begin(SidRegPlayerConfig *cfg)
 	delta_t = round((float)config->clockfreq / ((float)config->samplerate));
 
 	samples_per_frame = round((float)config->samplerate / ((float)cfg->framerate));
-	frame_period_ms = 1000 / cfg->framerate;
+	frame_period_us = 1000000 / cfg->framerate;
 
 	printf("clockfreq: %d\n", this->config->clockfreq);
 	printf("samplerate: %d\n", this->config->samplerate);
 	printf("samples per frame: %d\n", samplesPerFrame());
-	printf("frame period: %d ms\n", framePeriod());
+	printf("frame period: %ld us\n", framePeriod());
 	printf("delta_t: %d\n", delta_t);
 
 	playing = true;
