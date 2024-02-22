@@ -39,7 +39,7 @@ void setup() {
   Serial.begin(115200);
 
   // open in write mode
-  auto cfg = kit.defaultConfig(audiokit::AudioOutput);
+  auto cfg = kit.defaultConfig(audiokit::KitOutput);
   //cfg.sample_rate = audio_hal_iface_samples_t::AUDIO_HAL_22K_SAMPLES;
   kit.begin(cfg);
 
