@@ -3,7 +3,7 @@ Basic example using the ReSID library with ESP32, using sid register dump data
 A single in-memory array with sid register dumps for a tune is applied every 20ms to the sid emulator.
 In between these updates, the number of samples needed in between updates given a sample rate is computed.
 6502 emulation is not needed for this scheme to work, however this probably limits the number of tunes that 
-can be used with this type of player.
+can be used with this type of player. No CIA timing based tunes will work with this example.
 
 This example also relies on the following libraries to work properly:
   - https://github.com/pschatzmann/arduino-audio-tools
