@@ -2,7 +2,6 @@
 
 #include "SidTools.h"
 #include "SDFat.h"
-#include "mos6502.h"
 
 #define MAX_INSTR 0x100000
 
@@ -10,7 +9,7 @@ struct SidPlayerConfig{
     uint16_t samplerate;
     int sid_model;
     int clockfreq;
-		float framerate;
+	float framerate;
 };
 
 struct SIDMetadata {
