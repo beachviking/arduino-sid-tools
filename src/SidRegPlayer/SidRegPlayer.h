@@ -29,7 +29,7 @@ public:
 	long getFramePeriod() { return(frame_period_us); }
 	void setFramePeriod(long period_us) {
 		frame_period_us = period_us;
-		samples_per_frame = round((float)config->samplerate / ((float)cfg->clockfreq/frame_period_us));
+		samples_per_frame = round((float)config->samplerate / ((float)config->clockfreq/frame_period_us));
 	}
 
 	// Provides the number of samples per frame
@@ -64,7 +64,7 @@ void SidRegPlayer::begin(SidRegPlayerConfig *cfg)
 	config = cfg;
 	this->reset();
 	sid->set_sampling_parameters(config->clockfreq, SAMPLE_FAST, config->samplerate); 
-	delta_t = round((float)config->clockfreq / ((float)config->samplerate));
+	delta_t = config->clockfreq / config->samplerate;
 
 	setFramePeriod(cfg->clockfreq / cfg->framerate);
 	// frame_period_us = 1000000 / cfg->framerate;

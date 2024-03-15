@@ -9,3 +9,5 @@
 #include "reSID/sid.cc"
 
 #include "SidRegPlayer/SidRegPlayer.h"
+#include "Mos6502/mos6502.h"
+#include "SidPlayer/SidPlayer.h"
