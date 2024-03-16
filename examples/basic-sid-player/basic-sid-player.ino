@@ -15,9 +15,13 @@ correctly by following the instructions for that library.
 10/13/2023 beachviking
 */
 
+
 #include "AudioKitHAL.h"
 #include "AudioTools.h"
-#include "SidTools.h"
+
+#include "SdFat.h"
+#include "SPI.h"
+#include <SidTools.h>
 
 #include "comic.h"
 
@@ -40,6 +44,7 @@ void setup() {
 
   // open in write mode
   auto cfg = kit.defaultConfig(audiokit::KitOutput);
+//  auto cfg = kit.defaultConfig(audiokit::AudioOutput);
   //cfg.sample_rate = audio_hal_iface_samples_t::AUDIO_HAL_22K_SAMPLES;
   kit.begin(cfg);
 
