@@ -51,6 +51,12 @@ public:
 	// Provides the current number of samples per frame
 	long getSamplesPerFrame() { return(samples_per_frame); }
 
+  // Expose the underlying SID object for per-voice output capture
+  SID* getSID() { return sid; }
+
+  // Expose delta_t (cycles per sample) for inline audio loops
+  cycle_count getDeltaT() { return delta_t; }
+
   SIDMetadata	meta;
 
 private:

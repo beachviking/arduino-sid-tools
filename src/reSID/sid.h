@@ -87,7 +87,9 @@ public:
   int output();
   // n-bit output.
   int output(int bits);
-
+  // Per-voice amplitude-modulated output (waveform x envelope, pre-filter).
+  // Call after clock() while state is current.
+  sound_sample voice_output(int i) { return voice[i].output(); }
 protected:
 
   RESID_INLINE int clock_fast(cycle_count& delta_t, short* buf, int n);
